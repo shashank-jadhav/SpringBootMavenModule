@@ -1,0 +1,122 @@
+-- --------------------------------------------------------
+-- Host:                         127.0.0.1
+-- Server version:               10.1.10-MariaDB - mariadb.org binary distribution
+-- Server OS:                    Win64
+-- HeidiSQL Version:             9.4.0.5125
+-- --------------------------------------------------------
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+
+-- Dumping database structure for mybootapp
+DROP DATABASE IF EXISTS `mybootapp`;
+CREATE DATABASE IF NOT EXISTS `mybootapp` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `mybootapp`;
+
+-- Dumping structure for table mybootapp.user
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE IF NOT EXISTS `user` (
+  `user_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) CHARACTER SET utf8 COLLATE utf8_swedish_ci NOT NULL,
+  `password_hash` binary(60) NOT NULL,
+  `pass_change_datetime` datetime DEFAULT NULL,
+  `pass_change_timezone` varchar(50) DEFAULT NULL,
+  `pass_change_millis_since_epoch` bigint(20) unsigned DEFAULT NULL,
+  `role` varchar(50) NOT NULL,
+  `account_status` varchar(50) NOT NULL,
+  `auth_provider` varchar(50) NOT NULL,
+  `full_name` varchar(50) DEFAULT NULL,
+  `first_name` varchar(50) DEFAULT NULL,
+  `last_name` varchar(50) DEFAULT NULL,
+  `contact_number` varchar(50) DEFAULT NULL,
+  `company_name` varchar(255) DEFAULT NULL,
+  `position_in_company` varchar(255) DEFAULT NULL,
+  `is_profile_updated` bit(1) NOT NULL DEFAULT b'0',
+  `is_banned` bit(1) NOT NULL DEFAULT b'0',
+  `ban_reason` varchar(500) DEFAULT NULL,
+  `banned_datetime` datetime DEFAULT NULL,
+  `banned_timezone` varchar(50) DEFAULT NULL,
+  `banned_millis_since_epoch` bigint(20) unsigned DEFAULT NULL,
+  `banning_admin_user_id` bigint(20) unsigned DEFAULT NULL,
+  `create_timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_timestamp` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `is_deleted` bit(1) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `email` (`username`),
+  KEY `FK_user_user` (`banning_admin_user_id`),
+  KEY `FK_user_user_role_cfg` (`role`),
+  KEY `FK_user_user_status_cfg` (`account_status`),
+  KEY `FK_user_user_auth_provider` (`auth_provider`),
+  CONSTRAINT `FK_user_user` FOREIGN KEY (`banning_admin_user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `FK_user_user_auth_provider` FOREIGN KEY (`auth_provider`) REFERENCES `user_auth_provider` (`auth_provider`),
+  CONSTRAINT `FK_user_user_role_cfg` FOREIGN KEY (`role`) REFERENCES `user_role_cfg` (`role`),
+  CONSTRAINT `FK_user_user_status_cfg` FOREIGN KEY (`account_status`) REFERENCES `user_status_cfg` (`account_status`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+
+-- Dumping data for table mybootapp.user: ~5 rows (approximately)
+DELETE FROM `user`;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` (`user_id`, `username`, `password_hash`, `pass_change_datetime`, `pass_change_timezone`, `pass_change_millis_since_epoch`, `role`, `account_status`, `auth_provider`, `full_name`, `first_name`, `last_name`, `contact_number`, `company_name`, `position_in_company`, `is_profile_updated`, `is_banned`, `ban_reason`, `banned_datetime`, `banned_timezone`, `banned_millis_since_epoch`, `banning_admin_user_id`, `create_timestamp`, `update_timestamp`, `is_deleted`) VALUES
+	(4, 'shashankjadhav08@gmail.com', '$2a$10$jmfhPgHEz1ZcY72pmI6OIuVtq/GqtzbSwgkFEin5yrgWYUh3Piyb2', '2017-12-15 11:53:33', 'UTC', 1513338812754, 'ROLE_NORMAL_USER', 'ACTIVE', 'AUP_APPLICATION', NULL, 'Shashank', 'JadhavV', '8888888888', 'asasa', 'asasa', b'1', b'0', NULL, NULL, NULL, NULL, NULL, '2017-11-16 11:38:48', '2018-08-14 09:37:33', b'0');
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+
+-- Dumping structure for table mybootapp.user_auth_provider
+DROP TABLE IF EXISTS `user_auth_provider`;
+CREATE TABLE IF NOT EXISTS `user_auth_provider` (
+  `auth_provider` varchar(50) NOT NULL,
+  `description` varchar(200) NOT NULL,
+  `create_timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_timestamp` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`auth_provider`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Dumping data for table mybootapp.user_auth_provider: ~0 rows (approximately)
+DELETE FROM `user_auth_provider`;
+/*!40000 ALTER TABLE `user_auth_provider` DISABLE KEYS */;
+INSERT INTO `user_auth_provider` (`auth_provider`, `description`, `create_timestamp`, `update_timestamp`) VALUES
+	('AUP_APPLICATION', 'Account auth provider is application itself.', '2017-09-06 14:10:07', NULL);
+/*!40000 ALTER TABLE `user_auth_provider` ENABLE KEYS */;
+
+-- Dumping structure for table mybootapp.user_role_cfg
+DROP TABLE IF EXISTS `user_role_cfg`;
+CREATE TABLE IF NOT EXISTS `user_role_cfg` (
+  `role` varchar(50) NOT NULL,
+  `description` varchar(200) NOT NULL,
+  `create_timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_timestamp` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`role`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Dumping data for table mybootapp.user_role_cfg: ~2 rows (approximately)
+DELETE FROM `user_role_cfg`;
+/*!40000 ALTER TABLE `user_role_cfg` DISABLE KEYS */;
+INSERT INTO `user_role_cfg` (`role`, `description`, `create_timestamp`, `update_timestamp`) VALUES
+	('ROLE_ADMIN_USER', 'The user is an admin.', '2017-09-06 13:20:03', '2017-09-06 16:25:17'),
+	('ROLE_NORMAL_USER', 'The user has basic authorizations in the app.', '2017-09-06 13:19:55', '2017-09-06 16:25:40');
+/*!40000 ALTER TABLE `user_role_cfg` ENABLE KEYS */;
+
+-- Dumping structure for table mybootapp.user_status_cfg
+DROP TABLE IF EXISTS `user_status_cfg`;
+CREATE TABLE IF NOT EXISTS `user_status_cfg` (
+  `account_status` varchar(50) NOT NULL,
+  `description` varchar(200) NOT NULL,
+  `create_timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_timestamp` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`account_status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Dumping data for table mybootapp.user_status_cfg: ~2 rows (approximately)
+DELETE FROM `user_status_cfg`;
+/*!40000 ALTER TABLE `user_status_cfg` DISABLE KEYS */;
+INSERT INTO `user_status_cfg` (`account_status`, `description`, `create_timestamp`, `update_timestamp`) VALUES
+	('ACTIVE', 'Means the account username has been verified using either an activation link or an otp.', '2017-09-06 13:19:04', '2017-09-06 16:23:14'),
+	('PENDING_VERIFICATION', 'Means the account has been registered, but is pending verification. Verification is a user task like using the activation link or entering an otp.', '2017-09-06 16:05:33', '2017-09-06 16:24:07');
+/*!40000 ALTER TABLE `user_status_cfg` ENABLE KEYS */;
+
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
