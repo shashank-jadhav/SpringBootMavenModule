@@ -38,7 +38,7 @@ public class JsonAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
 		if (principal instanceof CustomSecurityUserDetails) {
 			CustomSecurityUserDetails securityUserDetails = (CustomSecurityUserDetails) principal;
-
+			
 			loginSuccessResponse.setUserId(securityUserDetails.getUserId());
 			loginSuccessResponse.setUsername(securityUserDetails.getUsername());
 			loginSuccessResponse.setRole(securityUserDetails.getRole());
