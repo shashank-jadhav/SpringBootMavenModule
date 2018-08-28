@@ -122,6 +122,12 @@ public class User implements Serializable {
 		this.username = username;
 		this.fullName = fullName;
 	}
+
+	public User() {
+		super();
+	}
+	
+	
 	
 	
 	
